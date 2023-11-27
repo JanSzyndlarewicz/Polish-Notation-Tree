@@ -93,6 +93,7 @@ vector<int> Utilities::convertToInt(vector<string> &variables) {
 CTree Utilities::executeOperation(string &command, vector<string> &line, CTree &cTree) {
     if (command == "enter") {
         CTree newCTree(line);
+        cout << "Wczytane polecenie: ";
         newCTree.prefixTraverse();
         return newCTree;
     } else if (command == "print")

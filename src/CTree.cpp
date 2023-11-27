@@ -31,6 +31,8 @@ vector<string> CTree::findVariables(CNode &node) {
 CTree::CTree(const vector<string>& expression) {
     int *index = new int(-1);
     root = CNode(expression, index);
+    if(*index < expression.size()-1)
+        cout << "Podane za duzo elementow. ";
     delete index;
 }
 
