@@ -24,11 +24,11 @@ public:
     explicit CNode(const string& statement);
     explicit CNode(const vector<string> &exp, int *index);
 
-    void addChild(CNode& child);
+
     double compute(vector<string> variables, vector<int> &values);
-    void findAllVariables(vector<string> &variables);
     void printPreorderTraverse();
     string toString() const;
+
     int getType() const;
     int getValue() const;
     string getOperationOrVariable() const;
@@ -40,7 +40,7 @@ public:
 
     bool isVariable();
 
-    CNode *getLeaf();
+    CNode *getLeftLeaf();
 };
 
 

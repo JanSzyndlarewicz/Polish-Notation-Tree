@@ -11,7 +11,7 @@ using namespace std;
 
 void CTree::prefixTraverse() {
     root.printPreorderTraverse();
-
+    cout << endl;
 }
 vector<string> CTree::findVariables(CNode &node) {
     vector<string> variables;
@@ -45,6 +45,6 @@ CNode &CTree::getRoot() {
 }
 
 CTree CTree::operator+(const CTree &tree) {
-    *root.getLeaf()=tree.root;
+    *root.getLeftLeaf()=tree.root;
     return *this;
 }

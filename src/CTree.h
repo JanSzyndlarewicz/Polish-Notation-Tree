@@ -17,12 +17,13 @@ private:
 
 public:
     CTree();
-
     explicit CTree(const vector<string>& expression);
+
     static vector<string> findVariables(CNode &node);
     void prefixTraverse();
     double compute(vector<int> values);
     CNode &getRoot();
+
     CTree operator+(const CTree &tree);
 };
 

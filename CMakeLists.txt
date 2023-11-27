@@ -3,9 +3,9 @@ project(untitled)
 
 set(CMAKE_CXX_STANDARD 98)
 
-add_executable(untitled main.cpp
-        CNode.h
-        CNode.cpp
-        CTree.h
-        CTree.cpp
-        Utilities.cpp)
+add_executable(untitled src/main.cpp
+        src/CNode.h
+        src/CNode.cpp
+        src/CTree.h
+        src/CTree.cpp
+        src/Utilities.cpp)

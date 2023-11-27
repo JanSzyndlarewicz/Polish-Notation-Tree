@@ -59,43 +59,42 @@ vector<string> Utilities::convertToVector(string expression) {
         iterator++;
         if (!part.empty())
             table.push_back(part);
-
     }
-
     return table;
 }
 
 void Utilities::initialize() {
     CTree cTree;
-    while (true) {
-        cout << "Wpisz polecenie:" << endl;
+    string command;
+    while (command != "exit") {
+        cout << "Podaj polecenie -> " << endl;
         string expression;
         getline(cin, expression);
 
         vector<string> line = convertToVector(expression);
 
-        string word;
-        word = line[0];
+        command= line[0];
         line.erase(line.begin());
 
-        cTree = executeCommand(word, line, cTree);
+        if(command != "exit")
+            cTree = executeOperation(command, line, cTree);
     }
 }
 
 vector<int> Utilities::convertToInt(vector<string> &variables) {
     vector<int> result;
+    result.reserve(variables.size());
     for (int i = 0; i < variables.size(); ++i) {
         result.push_back(stringToInt(variables[i]));
     }
     return result;
 }
 
-CTree Utilities::executeCommand(string &command, vector<string> &line, CTree &cTree) {
+CTree Utilities::executeOperation(string &command, vector<string> &line, CTree &cTree) {
     if (command == "enter") {
-        CTree nowy(line);
-        nowy.prefixTraverse();
-        cout << endl;
-        return nowy;
+        CTree newCTree(line);
+        newCTree.prefixTraverse();
+        return newCTree;
     } else if (command == "print")
         cTree.prefixTraverse();
     else if (command == "comp")
@@ -105,9 +104,8 @@ CTree Utilities::executeCommand(string &command, vector<string> &line, CTree &cT
         cTree.prefixTraverse();
     } else if (command == "vars"){
         vector<string> variables = CTree::findVariables(cTree.getRoot());
-        for (int i = 0; i < variables.size(); ++i) {
+        for (int i = 0; i < variables.size(); ++i)
             cout << variables[i] << " ";
-        }
         cout << endl;
     }
     else

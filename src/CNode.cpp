@@ -19,6 +19,11 @@
 
 using namespace std;
 
+CNode::CNode() {
+    value = -1;
+    type = 0;
+}
+
 CNode::CNode(int value) : children() {
     this->value = value;
     type = 0;
@@ -34,18 +39,18 @@ CNode::CNode(const string &statement) : value(), children() {
 
 }
 
-string CNode::toString() const {
-    if (type == 0) {
-        std::stringstream valueToStr;
-        valueToStr << value;
-        return valueToStr.str();
+CNode::CNode(const vector<string> &exp, int *index) {
+    (*index)++;
+    type = Utilities::whichType(exp[*index]);
+    this->operationOrVariable = exp[*index];
+    if (type == 0)
+        this->value = Utilities::stringToInt(exp[*index]);
+    else if (type > 5)
+        children.push_back(CNode(exp, index));
+    else if (type > 1) {
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
     }
-
-    return operationOrVariable;
-}
-
-void CNode::addChild(CNode &child) {
-    children.push_back(child);
 }
 
 double CNode::compute(vector<string> variables, vector<int> &values) {
@@ -79,16 +84,21 @@ void CNode::printPreorderTraverse() {
         child.printPreorderTraverse();
 }
 
+CNode* CNode::getLeftLeaf() {
+    if(children.empty())
+        return this;
+    return children[0].getLeftLeaf();
+}
 
-void CNode::findAllVariables(vector<string> &variables) {
-    if (type == 1) {
-        if (find(variables.begin(), variables.end(), operationOrVariable) == variables.end())
-            variables.push_back(operationOrVariable);
+
+string CNode::toString() const {
+    if (type == 0) {
+        stringstream valueToStr;
+        valueToStr << value;
+        return valueToStr.str();
     }
 
-    for (int i = 0; i < children.size(); i++) {
-        children[i].printPreorderTraverse();
-    }
+    return operationOrVariable;
 }
 
 int CNode::getType() const {
@@ -121,29 +131,4 @@ void CNode::setChildren(const vector<CNode> &childrenVector) {
 
 bool CNode::isVariable() {
     return type == 1;
-}
-
-CNode::CNode() {
-    value = -1;
-    type = 0;
-}
-
-CNode::CNode(const vector<string> &exp, int *index) {
-    (*index)++;
-    type = Utilities::whichType(exp[*index]);
-    this->operationOrVariable = exp[*index];
-    if (type == 0)
-        this->value = Utilities::stringToInt(exp[*index]);
-    else if (type > 5)
-        children.push_back(CNode(exp, index));
-    else if (type > 1) {
-        children.push_back(CNode(exp, index));
-        children.push_back(CNode(exp, index));
-    }
-}
-
-CNode* CNode::getLeaf() {
-    if(children.empty())
-        return  this;
-    return children[0].getLeaf();
 }

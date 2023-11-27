@@ -19,7 +19,7 @@ public:
     static int whichType(const string& statement);
     static vector<string> convertToVector(string expression);
     static void initialize();
-    static CTree executeCommand(string &command, vector<string> &line, CTree &cTree);
+    static CTree executeOperation(string &command, vector<string> &line, CTree &cTree);
     static vector<int> convertToInt(vector<string> &variables);
 };
 
