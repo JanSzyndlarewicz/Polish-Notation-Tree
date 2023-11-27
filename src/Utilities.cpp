@@ -25,6 +25,8 @@ int Utilities::whichType(const string& statement) {
         return 6;
     if(statement == "cos")
         return 7;
+    if(statement == "supersum")
+        return 8;
     return 1;
 
 }
@@ -67,7 +69,7 @@ void Utilities::initialize() {
     CTree cTree;
     string command;
     while (command != "exit") {
-        cout << "Podaj polecenie -> " << endl;
+        cout << "Podaj polecenie -> ";
         string expression;
         getline(cin, expression);
 

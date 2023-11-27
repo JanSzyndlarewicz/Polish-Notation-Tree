@@ -45,6 +45,12 @@ CNode::CNode(const vector<string> &exp, int *index) {
     this->operationOrVariable = exp[*index];
     if (type == 0)
         this->value = Utilities::stringToInt(exp[*index]);
+    else if(type == 8){
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+    }
     else if (type > 5)
         children.push_back(CNode(exp, index));
     else if (type > 1) {
@@ -73,6 +79,8 @@ double CNode::compute(vector<string> variables, vector<int> &values) {
             return sin(children[0].compute(variables, values));
         case 7:
             return cos(children[0].compute(variables, values));
+        case 8:
+            return children[0].compute(variables, values) + children[1].compute(variables, values) + children[2].compute(variables, values) + children[3].compute(variables, values);
     }
 
     return 0;
