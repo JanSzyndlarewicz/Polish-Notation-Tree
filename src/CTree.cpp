@@ -13,25 +13,27 @@ void CTree::prefixTraverse() {
     root.printPreorderTraverse();
     cout << endl;
 }
+
 vector<string> CTree::findVariables(CNode &node) {
     vector<string> variables;
     if (node.isVariable()) {
-        if(variables.end() == find(variables.begin(), variables.end(), node.toString()))
+        if (variables.end() == find(variables.begin(), variables.end(), node.toString()))
             variables.push_back(node.toString());
     } else {
-        for (CNode child:node.getChildren())
-            for (string variable:findVariables(child))
-                if(variables.end() == find(variables.begin(), variables.end(), variable))
-                    variables.push_back(variable);
+        for (int i = 0; i < node.getChildren().size(); i++)
+            for (int j = 0; j < findVariables(node.getChildren()[i]).size(); j++)
+                if (variables.end() ==
+                    find(variables.begin(), variables.end(), findVariables(node.getChildren()[i])[j]))
+                    variables.push_back(findVariables(node.getChildren()[i])[j]);
     }
 
     return variables;
 }
 
-CTree::CTree(const vector<string>& expression) {
+CTree::CTree(const vector<string> &expression) {
     int *index = new int(-1);
     root = CNode(expression, index);
-    if(*index < expression.size()-1)
+    if (*index < expression.size() - 1)
         cout << "Podane za duzo elementow. ";
     delete index;
 }
@@ -47,6 +49,6 @@ CNode &CTree::getRoot() {
 }
 
 CTree CTree::operator+(const CTree &tree) {
-    *root.getLeftLeaf()=tree.root;
+    *root.getLeftLeaf() = tree.root;
     return *this;
 }
