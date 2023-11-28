@@ -32,10 +32,10 @@ CNode::CNode(int value) : children() {
 CNode::CNode(const string &statement) : value(), children() {
     type = Utilities::whichType(statement);
     if (type == 0)
-        this->value = Utilities::stringToInt(statement);
-    else {
+        this->value = Utilities::convertStringToInt(statement);
+    else
         this->operationOrVariable = statement;
-    }
+
 
 }
 
@@ -44,7 +44,7 @@ CNode::CNode(const vector<string> &exp, int *index) {
     type = Utilities::whichType(exp[*index]);
     this->operationOrVariable = exp[*index];
     if (type == 0)
-        this->value = Utilities::stringToInt(exp[*index]);
+        this->value = Utilities::convertStringToInt(exp[*index]);
     else if(type == 8){
         children.push_back(CNode(exp, index));
         children.push_back(CNode(exp, index));
@@ -63,10 +63,8 @@ double CNode::compute(vector<string> variables, vector<int> &values) {
     switch (type) {
         case 0:
             return value;
-        case 1: {
-            int index = find(variables.begin(), variables.end(), operationOrVariable) - variables.begin();
-            return values[index];
-        }
+        case 1:
+            return values[find(variables.begin(), variables.end(), operationOrVariable) - variables.begin()];
         case 2:
             return children[0].compute(variables, values) + children[1].compute(variables, values);
         case 3:

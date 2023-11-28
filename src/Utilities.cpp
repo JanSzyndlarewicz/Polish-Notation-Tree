@@ -31,7 +31,7 @@ int Utilities::whichType(const string& statement) {
 
 }
 
-int Utilities::stringToInt(const string &str) {
+int Utilities::convertStringToInt(const string &str) {
     int result;
     stringstream convert(str);
     if ( !(convert >> result) )
@@ -83,12 +83,12 @@ void Utilities::initialize() {
     }
 }
 
-vector<int> Utilities::convertToInt(vector<string> &variables) {
+vector<int> Utilities::convertVectorStringToInt(vector<string> &variables) {
     vector<int> result;
     result.reserve(variables.size());
-    for (int i = 0; i < variables.size(); ++i) {
-        result.push_back(stringToInt(variables[i]));
-    }
+    for (int i = 0; i < variables.size(); ++i)
+        result.push_back(convertStringToInt(variables[i]));
+
     return result;
 }
 
@@ -101,7 +101,7 @@ CTree Utilities::executeOperation(string &command, vector<string> &line, CTree &
     } else if (command == "print")
         cTree.prefixTraverse();
     else if (command == "comp")
-        cout << cTree.compute(convertToInt(line)) << endl;
+        cout << cTree.compute(convertVectorStringToInt(line)) << endl;
     else if (command == "join") {
         cTree = cTree + CTree(line);
         cTree.prefixTraverse();
