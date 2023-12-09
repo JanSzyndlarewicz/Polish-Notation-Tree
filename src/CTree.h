@@ -31,6 +31,8 @@ public:
     static int stringToInt(string &str);
 
     static double stringToDouble(string &str);
+
+    string stringToString(string &str);
 };
 
 template<>
@@ -49,12 +51,19 @@ vector<double> CTree<double>::convertToT(vector<string> &values) {
     result.reserve(values.size());
 
     for (int i = 0; i < values.size(); ++i) {
-        //result.push_back(2.2);
         result.push_back(stringToDouble(values[i]));
-        cout << "test" << endl;
-        //cout << result[i] << endl;
     }
 
+    return result;
+}
+
+template<>
+vector<string> CTree<string>::convertToT(vector<string> &values) {
+    vector<string> result;
+    result.reserve(values.size());
+    for (int i = 0; i < values.size(); ++i) {
+        result.push_back(stringToString(values[i]));
+    }
     return result;
 }
 
@@ -64,6 +73,7 @@ vector<T> CTree<T>::convertToT(vector<string> &values) {
 
     return result;
 }
+
 
 template<typename T>
 double CTree<T>::stringToDouble(string &str) {
@@ -82,6 +92,12 @@ int CTree<T>::stringToInt(string &str) {
     if ( !(convert >> result) )
         result = 0;
     return result;
+}
+
+template<typename T>
+string CTree<T>::stringToString(string &str) {
+    str.erase(remove(str.begin(), str.end(), '"'), str.end());
+    return str;
 }
 
 

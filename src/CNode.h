@@ -60,6 +60,12 @@ public:
     int whichTypeDouble(const string &statement);
 
     bool isDouble(const string &s);
+
+    string stringToString(string &str);
+
+    int whichTypeString(const string &statement);
+
+    bool isString(const string &s);
 };
 
 template <typename T>
@@ -113,6 +119,27 @@ CNode<double>::CNode(vector<string> &exp, int *index) {
         children.push_back(CNode(exp, index));
         children.push_back(CNode(exp, index));
     }
+}
+
+template <>
+CNode<string>::CNode(vector<string> &exp, int *index) {
+    (*index)++;
+    type = whichTypeString(exp[*index]);
+    this->operationOrVariable = exp[*index];
+    if (type == 0)
+        this->value = stringToString(exp[*index]);
+    else if (type > 5)
+        children.push_back(CNode(exp, index));
+    else if (type > 1) {
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+    }
+}
+
+template<typename T>
+string CNode<T>::stringToString(string &str) {
+    str.erase(remove(str.begin(), str.end(), '"'), str.end());
+    return str;
 }
 
 template <typename T>
@@ -171,6 +198,21 @@ int CNode<T>::whichTypeDouble(const string& statement) {
 }
 
 template <typename T>
+int CNode<T>::whichTypeString(const string& statement) {
+    if(isString(statement))
+        return 0;
+    if(statement == "+")
+        return 2;
+    if(statement == "-")
+        return 3;
+    if(statement == "*")
+        return 4;
+    if(statement == "/")
+        return 5;
+    return 1;
+}
+
+template <typename T>
 bool CNode<T>::isDouble(const string& s) {
     if (s.empty()) return false;
 
@@ -179,6 +221,18 @@ bool CNode<T>::isDouble(const string& s) {
             return false;
         }
     }
+    return true;
+}
+
+template <typename T>
+bool CNode<T>::isString(const string& s) {
+    if (s.empty())
+        return false;
+
+    if(s[0] != '"' || s[s.length() - 1] != '"')
+        return false;
+
+
     return true;
 }
 

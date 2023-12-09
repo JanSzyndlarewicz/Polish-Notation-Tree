@@ -155,13 +155,13 @@ CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTre
     } else if (command == "print")
         cTree.prefixTraverse();
     else if (command == "comp"){
-        for(int i = 0; i < line.size(); ++i)
-            cout << line[i] << endl;
-        cout << cTree.getRoot().getType() << endl;
-        cout << cTree.getRoot().getChildren()[0].getValue() << endl;
-        cout << cTree.getRoot().getChildren()[0].getType() << endl;
-        cout << cTree.getRoot().getChildren()[1].getValue() << endl;
-        cout << cTree.getRoot().getChildren()[1].getType() << endl;
+//        for(int i = 0; i < line.size(); ++i)
+//            cout << line[i] << endl;
+//        cout << cTree.getRoot().getType() << endl;
+//        cout << cTree.getRoot().getChildren()[0].getValue() << endl;
+//        cout << cTree.getRoot().getChildren()[0].getType() << endl;
+//        cout << cTree.getRoot().getChildren()[1].getValue() << endl;
+//        cout << cTree.getRoot().getChildren()[1].getType() << endl;
 
         cout << cTree.compute(line) << endl;
     }
