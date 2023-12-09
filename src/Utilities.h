@@ -46,7 +46,7 @@ int Utilities::whichType(const string& statement) {
         return 4;
     if(statement == "/")
         return 5;
-    return 1;
+    return 0;
 
 }
 
@@ -145,7 +145,8 @@ vector<int> Utilities::convertToInt(vector<string> &variables) {
 
 template<typename T>
 CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTree<T> &cTree) {
-    vector<string> x;
+
+
     if (command == "enter") {
         CTree<T> newCTree(line);
         cout << "Wczytane polecenie: ";
@@ -153,8 +154,19 @@ CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTre
         return newCTree;
     } else if (command == "print")
         cTree.prefixTraverse();
-    else if (command == "comp")
+    else if (command == "comp"){
+        for(int i = 0; i < line.size(); ++i)
+            cout << line[i] << endl;
+        cout << cTree.getRoot().getType() << endl;
+        cout << cTree.getRoot().getChildren()[0].getValue() << endl;
+        cout << cTree.getRoot().getChildren()[0].getType() << endl;
+        cout << cTree.getRoot().getChildren()[1].getValue() << endl;
+        cout << cTree.getRoot().getChildren()[1].getType() << endl;
+
         cout << cTree.compute(line) << endl;
+    }
+
+
 //    else if (command == "join") {
 //        cTree = cTree + CTree<string>(line);
 //        cTree.prefixTraverse();

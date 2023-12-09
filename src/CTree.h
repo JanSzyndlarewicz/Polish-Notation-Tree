@@ -17,7 +17,7 @@ private:
 
 public:
     CTree();
-    explicit CTree(const vector<string>& expression);
+    explicit CTree(vector<string>& expression);
 
     static vector<string> findVariables(CNode<T> &node);
     void prefixTraverse();
@@ -29,6 +29,8 @@ public:
 
 
     static int stringToInt(string &str);
+
+    static double stringToDouble(string &str);
 };
 
 template<>
@@ -41,11 +43,37 @@ vector<int> CTree<int>::convertToT(vector<string> &values) {
     return result;
 }
 
-template<typename T>
-vector<T> CTree<T>::convertToT(vector<string> &values) {
-    return vector<T>();
+template<>
+vector<double> CTree<double>::convertToT(vector<string> &values) {
+    vector<double> result;
+    result.reserve(values.size());
+
+    for (int i = 0; i < values.size(); ++i) {
+        //result.push_back(2.2);
+        result.push_back(stringToDouble(values[i]));
+        cout << "test" << endl;
+        //cout << result[i] << endl;
+    }
+
+    return result;
 }
 
+template<typename T>
+vector<T> CTree<T>::convertToT(vector<string> &values) {
+    vector<T> result;
+
+    return result;
+}
+
+template<typename T>
+double CTree<T>::stringToDouble(string &str) {
+    stringstream ss(str);
+    double ld;
+    if(!(ss >> ld))
+        ld = 0;
+    cout << ld << endl;
+    return ld;
+}
 
 template<typename T>
 int CTree<T>::stringToInt(string &str) {
@@ -81,7 +109,7 @@ vector<string> CTree<T>::findVariables(CNode<T> &node) {
 }
 
 template<typename T>
-CTree<T>::CTree(const vector<string> &expression) {
+CTree<T>::CTree(vector<string> &expression) {
     int *index = new int(-1);
     root = CNode<T>(expression, index);
     if (*index < expression.size() - 1)
@@ -94,10 +122,13 @@ CTree<T>::CTree() {}
 
 template<typename T>
 T CTree<T>::compute(vector<string> &values) {
-    return root.compute(findVariables(root), convertToT(values));
+    cout << "values size:" << values.size() << endl;
+    for(int i = 0; i < values.size(); i++)
+        cout << values[i] << endl;
+
+    vector<T> tmp = convertToT(values);
+    return root.compute(findVariables(root), tmp);
 }
-
-
 
 template<typename T>
 CNode<T> &CTree<T>::getRoot() {

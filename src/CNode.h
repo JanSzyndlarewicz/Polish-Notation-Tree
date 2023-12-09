@@ -28,7 +28,7 @@ public:
     CNode();
     explicit CNode(int value);
     explicit CNode(const string& statement);
-    explicit CNode(const vector<string> &exp, int *index);
+    explicit CNode(vector<string> &exp, int *index);
 
 
     T compute(vector<string> variables, vector<T> values);
@@ -48,13 +48,18 @@ public:
 
     CNode *getLeftLeaf();
 
+
     int whichType(const string &statement);
 
     bool isNumber(const string &s);
 
     int stringToInt(const string &str);
 
-    vector<int> convertToInt(vector<string> &variables);
+    double stringToDouble(string &str);
+
+    int whichTypeDouble(const string &statement);
+
+    bool isDouble(const string &s);
 };
 
 template <typename T>
@@ -80,8 +85,8 @@ CNode<T>::CNode(const string &statement) : value(), children() {
 
 }
 
-template <typename T>
-CNode<T>::CNode(const vector<string> &exp, int *index) {
+template <>
+CNode<int>::CNode(vector<string> &exp, int *index) {
     (*index)++;
     type = whichType(exp[*index]);
     this->operationOrVariable = exp[*index];
@@ -93,6 +98,46 @@ CNode<T>::CNode(const vector<string> &exp, int *index) {
         children.push_back(CNode(exp, index));
         children.push_back(CNode(exp, index));
     }
+}
+
+template <>
+CNode<double>::CNode(vector<string> &exp, int *index) {
+    (*index)++;
+    type = whichTypeDouble(exp[*index]);
+    this->operationOrVariable = exp[*index];
+    if (type == 0)
+        this->value = stringToDouble(exp[*index]);
+    else if (type > 5)
+        children.push_back(CNode(exp, index));
+    else if (type > 1) {
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+    }
+}
+
+template <typename T>
+CNode<T>::CNode(vector<string> &exp, int *index) {
+    (*index)++;
+    type = whichType(exp[*index]);
+    this->operationOrVariable = exp[*index];
+    if (type == 0)
+        this->value = stringToInt(exp[*index]);
+    else if (type > 5)
+        children.push_back(CNode(exp, index));
+    else if (type > 1) {
+        children.push_back(CNode(exp, index));
+        children.push_back(CNode(exp, index));
+    }
+}
+
+template<typename T>
+double CNode<T>::stringToDouble(string &str) {
+    stringstream ss(str);
+    double ld;
+    if(!(ss >> ld))
+        ld = 0;
+    cout << ld << endl;
+    return ld;
 }
 
 template <typename T>
@@ -108,8 +153,35 @@ int CNode<T>::whichType(const string& statement) {
     if(statement == "/")
         return 5;
     return 1;
-
 }
+
+template <typename T>
+int CNode<T>::whichTypeDouble(const string& statement) {
+    if(isDouble(statement))
+        return 0;
+    if(statement == "+")
+        return 2;
+    if(statement == "-")
+        return 3;
+    if(statement == "*")
+        return 4;
+    if(statement == "/")
+        return 5;
+    return 1;
+}
+
+template <typename T>
+bool CNode<T>::isDouble(const string& s) {
+    if (s.empty()) return false;
+
+    for (size_t i = 0; i < s.length(); ++i) {
+        if (!isdigit(s[i]) && s[i] != '.') {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 template <typename T>
 bool CNode<T>::isNumber(const string& s) {
@@ -132,18 +204,32 @@ int CNode<T>::stringToInt(const string &str) {
     return result;
 }
 
-template<>
-vector<int> CNode<int> :: convertToInt(vector<string> &variables) {
-    vector<int> result;
-    result.reserve(variables.size());
-    for (int i = 0; i < variables.size(); ++i) {
-        result.push_back(stringToInt(variables[i]));
-    }
-    return result;
-}
 
 template <>
 int CNode<int>::compute(vector<string> variables, vector<int> values) {
+
+    switch (type) {
+        case 0:
+            return value;
+        case 1: {
+            int index = find(variables.begin(), variables.end(), operationOrVariable) - variables.begin();
+            return values[index];
+        }
+        case 2:
+            return children[0].compute(variables, values) + children[1].compute(variables, values);
+        case 3:
+            return children[0].compute(variables, values) - children[1].compute(variables, values);
+        case 4:
+            return children[0].compute(variables, values) * children[1].compute(variables, values);
+        case 5:
+            return children[0].compute(variables, values) / children[1].compute(variables, values);
+    }
+
+    return 0;
+}
+
+template <>
+double CNode<double>::compute(vector<string> variables, vector<double> values) {
 
     switch (type) {
         case 0:
