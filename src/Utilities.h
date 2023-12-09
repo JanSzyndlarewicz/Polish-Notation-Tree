@@ -14,60 +14,11 @@ using namespace std;
 
 class Utilities {
 public:
-    static int stringToInt(const string &str);
-
-    static bool isNumber(const string& s);
-
-    static int whichType(const string& statement);
-
     static vector<string> convertToVector(string expression);
-
     void initialize();
-    static vector<int> convertToInt(vector<string> &variables);
-    static string subtractStrings(basic_string<char> s1, basic_string<char> s2);
-
-    template<typename T>
-    CTree<T> executeOperation(string &command, vector<string> &line, CTree<T> &cTree);
-
-    template<typename T>
-    void bridgeLoop(CTree<T> &cTree);
-
+    template<typename T> CTree<T> executeOperation(string &command, vector<string> &line, CTree<T> &cTree);
+    template<typename T> void bridgeLoop(CTree<T> &cTree);
 };
-
-
-int Utilities::whichType(const string& statement) {
-    if(isNumber(statement))
-        return 0;
-    if(statement == "+")
-        return 2;
-    if(statement == "-")
-        return 3;
-    if(statement == "*")
-        return 4;
-    if(statement == "/")
-        return 5;
-    return 0;
-
-}
-
-int Utilities::stringToInt(const string &str) {
-    int result;
-    stringstream convert(str);
-    if ( !(convert >> result) )
-        result = 0;
-    return result;
-}
-
-bool Utilities::isNumber(const string& s) {
-    if (s.empty()) return false;
-
-    for (size_t i = 0; i < s.length(); ++i) {
-        if (!isdigit(s[i])) {
-            return false;
-        }
-    }
-    return true;
-}
 
 vector<string> Utilities::convertToVector(string expression) {
     vector<string> table;
@@ -103,12 +54,10 @@ void Utilities::initialize() {
         } else if (type == "3") {
             CTree<int> tree;
             bridgeLoop(tree);
-        } else if (type == "4") {
+        } else if (type == "4")
             return;
-        } else {
+        else
             cout << "Niepoprawny wybór" << endl;
-
-        }
     }
 }
 
@@ -133,20 +82,8 @@ void Utilities::bridgeLoop(CTree<T> &cTree){
     }
 }
 
-vector<int> Utilities::convertToInt(vector<string> &variables) {
-    vector<int> result;
-    result.reserve(variables.size());
-    for (int i = 0; i < variables.size(); ++i) {
-        result.push_back(stringToInt(variables[i]));
-    }
-    return result;
-}
-
-
 template<typename T>
 CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTree<T> &cTree) {
-
-
     if (command == "enter") {
         CTree<T> newCTree(line);
         cout << "Wczytane polecenie: ";
@@ -154,23 +91,8 @@ CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTre
         return newCTree;
     } else if (command == "print")
         cTree.prefixTraverse();
-    else if (command == "comp"){
-//        for(int i = 0; i < line.size(); ++i)
-//            cout << line[i] << endl;
-//        cout << cTree.getRoot().getType() << endl;
-//        cout << cTree.getRoot().getChildren()[0].getValue() << endl;
-//        cout << cTree.getRoot().getChildren()[0].getType() << endl;
-//        cout << cTree.getRoot().getChildren()[1].getValue() << endl;
-//        cout << cTree.getRoot().getChildren()[1].getType() << endl;
-
+    else if (command == "comp")
         cout << cTree.compute(line) << endl;
-    }
-
-
-//    else if (command == "join") {
-//        cTree = cTree + CTree<string>(line);
-//        cTree.prefixTraverse();
-    //}
     else if (command == "vars"){
         vector<string> variables = CTree<T>::findVariables(cTree.getRoot());
         for (int i = 0; i < variables.size(); ++i)
@@ -180,14 +102,6 @@ CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTre
     else
         cout << "Niepoprawna komenda" << endl;
     return cTree;
-
-}
-
-string Utilities::subtractStrings(basic_string<char> s1, basic_string<char> s2) {
-    if(s1.find(s2) == string::npos)
-        return s1;
-    s1.erase(s1.rfind(s2), s2.length());
-    return s1;
 }
 
 

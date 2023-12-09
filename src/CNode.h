@@ -43,30 +43,134 @@ public:
     void setOperationOrVariable(const string &opOrVar);
     void setChildren(const vector<CNode>& childrenVector);
 
-
     bool isVariable();
 
     CNode *getLeftLeaf();
 
+    T stringToT(string &str);
+    int whichTypeOfT(const string &statement);
+    bool isValue(const string &s);
 
-    int whichType(const string &statement);
+    string subtract(string string1, string string2);
 
-    bool isNumber(const string &s);
+    string multiply(string string1, string string2);
 
-    int stringToInt(const string &str);
-
-    double stringToDouble(string &str);
-
-    int whichTypeDouble(const string &statement);
-
-    bool isDouble(const string &s);
-
-    string stringToString(string &str);
-
-    int whichTypeString(const string &statement);
-
-    bool isString(const string &s);
+    string divider(string string1, const string& string2);
 };
+
+template<typename T>
+string CNode<T>::divider(string string1, const string& string2) {
+    while(string1.find(string2) != string::npos)
+        string1.erase(string1.find(string2)+1, string2.length()-1);
+    return string1;
+}
+
+template<typename T>
+string CNode<T>::multiply(string string1, string string2) {
+    string result;
+    for(int i = 0; i < string1.length(); ++i) {
+        if(string1[i]==string2[0])
+            result+=string2;
+        else{
+            result+=string1[i];
+        }
+    }
+    return result;
+}
+
+template<typename T>
+string CNode<T>::subtract(string string1, string string2) {
+    if(string1.find(string2) == string::npos)
+        return string1;
+    string1.erase(string1.rfind(string2), string2.length());
+    return string1;
+}
+
+template<typename T>
+bool CNode<T>::isValue(const string &s) {
+    return false;
+}
+
+template<>
+bool CNode<string>::isValue(const string &s) {
+    if (s.empty())
+        return false;
+
+    if(s[0] != '"' || s[s.length() - 1] != '"')
+        return false;
+
+    return true;
+}
+
+template<>
+bool CNode<double>::isValue(const string &s) {
+    if (s.empty())
+        return false;
+
+    for (size_t i = 0; i < s.length(); ++i)
+        if (!isdigit(s[i]) && s[i] != '.')
+            return false;
+
+    return true;
+}
+
+template<>
+bool CNode<int>::isValue(const string &s) {
+    if (s.empty())
+        return false;
+
+    for (size_t i = 0; i < s.length(); ++i)
+        if (!isdigit(s[i]))
+            return false;
+
+    return true;
+}
+
+template<typename T>
+int CNode<T>::whichTypeOfT(const string &statement) {
+    if(isValue(statement))
+        return 0;
+    if(statement == "+")
+        return 2;
+    if(statement == "-")
+        return 3;
+    if(statement == "*")
+        return 4;
+    if(statement == "/")
+        return 5;
+    return 1;
+}
+
+template<typename T>
+T CNode<T>::stringToT(string &str) {
+    cout << "This should never happen" << endl;
+    T result;
+    return result;
+}
+
+template<>
+string CNode<string>::stringToT(string &str) {
+    str.erase(remove(str.begin(), str.end(), '"'), str.end());
+    return str;
+}
+
+template<>
+int CNode<int>::stringToT(string &str) {
+    int result;
+    stringstream convert(str);
+    if (!(convert >> result))
+        result = 0;
+    return result;
+}
+
+template<>
+double CNode<double>::stringToT(string &str) {
+    double result;
+    stringstream convert(str);
+    if (!(convert >> result))
+        result = 0;
+    return result;
+}
 
 template <typename T>
 CNode<T>::CNode() {
@@ -82,73 +186,22 @@ CNode<T>::CNode(int value) : children() {
 
 template <typename T>
 CNode<T>::CNode(const string &statement) : value(), children() {
-    type = whichType(statement);
+    type = whichTypeOfT(statement);
     if (type == 0)
-        this->value = stringToInt(statement);
+        this->value = stringToT(statement);
     else {
         this->operationOrVariable = statement;
     }
 
 }
 
-template <>
-CNode<int>::CNode(vector<string> &exp, int *index) {
-    (*index)++;
-    type = whichType(exp[*index]);
-    this->operationOrVariable = exp[*index];
-    if (type == 0)
-        this->value = stringToInt(exp[*index]);
-    else if (type > 5)
-        children.push_back(CNode(exp, index));
-    else if (type > 1) {
-        children.push_back(CNode(exp, index));
-        children.push_back(CNode(exp, index));
-    }
-}
-
-template <>
-CNode<double>::CNode(vector<string> &exp, int *index) {
-    (*index)++;
-    type = whichTypeDouble(exp[*index]);
-    this->operationOrVariable = exp[*index];
-    if (type == 0)
-        this->value = stringToDouble(exp[*index]);
-    else if (type > 5)
-        children.push_back(CNode(exp, index));
-    else if (type > 1) {
-        children.push_back(CNode(exp, index));
-        children.push_back(CNode(exp, index));
-    }
-}
-
-template <>
-CNode<string>::CNode(vector<string> &exp, int *index) {
-    (*index)++;
-    type = whichTypeString(exp[*index]);
-    this->operationOrVariable = exp[*index];
-    if (type == 0)
-        this->value = stringToString(exp[*index]);
-    else if (type > 5)
-        children.push_back(CNode(exp, index));
-    else if (type > 1) {
-        children.push_back(CNode(exp, index));
-        children.push_back(CNode(exp, index));
-    }
-}
-
-template<typename T>
-string CNode<T>::stringToString(string &str) {
-    str.erase(remove(str.begin(), str.end(), '"'), str.end());
-    return str;
-}
-
 template <typename T>
 CNode<T>::CNode(vector<string> &exp, int *index) {
     (*index)++;
-    type = whichType(exp[*index]);
+    type = whichTypeOfT(exp[*index]);
     this->operationOrVariable = exp[*index];
     if (type == 0)
-        this->value = stringToInt(exp[*index]);
+        this->value = stringToT(exp[*index]);
     else if (type > 5)
         children.push_back(CNode(exp, index));
     else if (type > 1) {
@@ -157,111 +210,8 @@ CNode<T>::CNode(vector<string> &exp, int *index) {
     }
 }
 
-template<typename T>
-double CNode<T>::stringToDouble(string &str) {
-    stringstream ss(str);
-    double ld;
-    if(!(ss >> ld))
-        ld = 0;
-    cout << ld << endl;
-    return ld;
-}
-
-template <typename T>
-int CNode<T>::whichType(const string& statement) {
-    if(isNumber(statement))
-        return 0;
-    if(statement == "+")
-        return 2;
-    if(statement == "-")
-        return 3;
-    if(statement == "*")
-        return 4;
-    if(statement == "/")
-        return 5;
-    return 1;
-}
-
-template <typename T>
-int CNode<T>::whichTypeDouble(const string& statement) {
-    if(isDouble(statement))
-        return 0;
-    if(statement == "+")
-        return 2;
-    if(statement == "-")
-        return 3;
-    if(statement == "*")
-        return 4;
-    if(statement == "/")
-        return 5;
-    return 1;
-}
-
-template <typename T>
-int CNode<T>::whichTypeString(const string& statement) {
-    if(isString(statement))
-        return 0;
-    if(statement == "+")
-        return 2;
-    if(statement == "-")
-        return 3;
-    if(statement == "*")
-        return 4;
-    if(statement == "/")
-        return 5;
-    return 1;
-}
-
-template <typename T>
-bool CNode<T>::isDouble(const string& s) {
-    if (s.empty()) return false;
-
-    for (size_t i = 0; i < s.length(); ++i) {
-        if (!isdigit(s[i]) && s[i] != '.') {
-            return false;
-        }
-    }
-    return true;
-}
-
-template <typename T>
-bool CNode<T>::isString(const string& s) {
-    if (s.empty())
-        return false;
-
-    if(s[0] != '"' || s[s.length() - 1] != '"')
-        return false;
-
-
-    return true;
-}
-
-
-template <typename T>
-bool CNode<T>::isNumber(const string& s) {
-    if (s.empty()) return false;
-
-    for (size_t i = 0; i < s.length(); ++i) {
-        if (!isdigit(s[i])) {
-            return false;
-        }
-    }
-    return true;
-}
-
-template <typename T>
-int CNode<T>::stringToInt(const string &str) {
-    int result;
-    stringstream convert(str);
-    if ( !(convert >> result) )
-        result = 0;
-    return result;
-}
-
-
 template <>
-int CNode<int>::compute(vector<string> variables, vector<int> values) {
-
+string CNode<string>::compute(vector<string> variables, vector<string> values) {
     switch (type) {
         case 0:
             return value;
@@ -272,37 +222,14 @@ int CNode<int>::compute(vector<string> variables, vector<int> values) {
         case 2:
             return children[0].compute(variables, values) + children[1].compute(variables, values);
         case 3:
-            return children[0].compute(variables, values) - children[1].compute(variables, values);
+            return subtract(children[0].compute(variables, values), children[1].compute(variables, values));
         case 4:
-            return children[0].compute(variables, values) * children[1].compute(variables, values);
+            return multiply(children[0].compute(variables, values), children[1].compute(variables, values));
         case 5:
-            return children[0].compute(variables, values) / children[1].compute(variables, values);
+            return divider(children[0].compute(variables, values), children[1].compute(variables, values));;
     }
 
-    return 0;
-}
-
-template <>
-double CNode<double>::compute(vector<string> variables, vector<double> values) {
-
-    switch (type) {
-        case 0:
-            return value;
-        case 1: {
-            int index = find(variables.begin(), variables.end(), operationOrVariable) - variables.begin();
-            return values[index];
-        }
-        case 2:
-            return children[0].compute(variables, values) + children[1].compute(variables, values);
-        case 3:
-            return children[0].compute(variables, values) - children[1].compute(variables, values);
-        case 4:
-            return children[0].compute(variables, values) * children[1].compute(variables, values);
-        case 5:
-            return children[0].compute(variables, values) / children[1].compute(variables, values);
-    }
-
-    return 0;
+    return "";
 }
 
 template <typename T>
@@ -316,13 +243,12 @@ T CNode<T>::compute(vector<string> variables, vector<T> values) {
         }
         case 2:
             return children[0].compute(variables, values) + children[1].compute(variables, values);
-//        case 3:
-//            return Utilities::subtractStrings(children[0].compute(variables, values), children[1].compute(variables, values));
-            //return children[0].compute(variables, values) - children[1].compute(variables, values);
-//        case 4:
-//            return children[0].compute(variables, values) * children[1].compute(variables, values);
-//        case 5:
-//            return children[0].compute(variables, values) / children[1].compute(variables, values);
+        case 3:
+            return children[0].compute(variables, values) - children[1].compute(variables, values);
+        case 4:
+            return children[0].compute(variables, values) * children[1].compute(variables, values);
+        case 5:
+            return children[0].compute(variables, values) / children[1].compute(variables, values);
     }
 
     return 0;

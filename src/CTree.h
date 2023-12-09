@@ -138,10 +138,6 @@ CTree<T>::CTree() {}
 
 template<typename T>
 T CTree<T>::compute(vector<string> &values) {
-    cout << "values size:" << values.size() << endl;
-    for(int i = 0; i < values.size(); i++)
-        cout << values[i] << endl;
-
     vector<T> tmp = convertToT(values);
     return root.compute(findVariables(root), tmp);
 }
