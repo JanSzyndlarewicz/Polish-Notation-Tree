@@ -15,9 +15,9 @@ using namespace std;
 class Utilities {
 public:
     static vector<string> convertToVector(string expression);
-    void initialize();
-    template<typename T> CTree<T> executeOperation(string &command, vector<string> &line, CTree<T> &cTree);
-    template<typename T> void bridgeLoop(CTree<T> &cTree);
+    static void initialize();
+    template<typename T> static CTree<T> executeOperation(string &command, vector<string> &line, CTree<T> &cTree);
+    template<typename T> static void bridgeLoop(CTree<T> &cTree);
 };
 
 vector<string> Utilities::convertToVector(string expression) {
@@ -98,6 +98,10 @@ CTree<T> Utilities::executeOperation(string &command, vector<string> &line, CTre
         for (int i = 0; i < variables.size(); ++i)
             cout << variables[i] << " ";
         cout << endl;
+    }
+    else if (command == "join") {
+        cTree = cTree + CTree<T>(line);
+        cTree.prefixTraverse();
     }
     else
         cout << "Niepoprawna komenda" << endl;

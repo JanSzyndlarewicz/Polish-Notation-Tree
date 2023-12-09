@@ -51,7 +51,7 @@ public:
     int whichTypeOfT(const string &statement);
     bool isValue(const string &s);
 
-    string subtract(string string1, string string2);
+    string subtract(string string1, const string& string2);
 
     string multiply(string string1, string string2);
 
@@ -79,7 +79,7 @@ string CNode<T>::multiply(string string1, string string2) {
 }
 
 template<typename T>
-string CNode<T>::subtract(string string1, string string2) {
+string CNode<T>::subtract(string string1, const string& string2) {
     if(string1.find(string2) == string::npos)
         return string1;
     string1.erase(string1.rfind(string2), string2.length());
