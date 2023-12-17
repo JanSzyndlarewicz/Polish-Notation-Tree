@@ -38,11 +38,11 @@ vector<string> Utilities::convertToVector(string expression) {
 
 void Utilities::initialize() {
     while (true) {
-        cout << "Wybierz typ drzewa:" << endl;
-        cout << "1. String" << endl;
-        cout << "2. Double" << endl;
-        cout << "3. Int" << endl;
-        cout << "4. Exit" << endl;
+        cout << "Choose three type:" << endl;
+        cout << "1 -> String" << endl;
+        cout << "2 -> Double" << endl;
+        cout << "3 -> Int" << endl;
+        cout << "4 -> Exit" << endl;
         string type;
         cin >> type;
         if (type == "1") {
@@ -65,7 +65,7 @@ template<typename T>
 void Utilities::bridgeLoop(CTree<T> &cTree){
     string command;
     while (command != "exit") {
-        cout << "Podaj polecenie -> " << endl;
+        cout << "Podaj polecenie -> ";
         string expression;
 
         while(expression.empty())

@@ -26,6 +26,7 @@ private:
 
 public:
     CNode();
+    CNode(const CNode<T> &other);
     explicit CNode(int value);
     explicit CNode(const string& statement);
     explicit CNode(vector<string> &exp, int *index);
@@ -57,6 +58,14 @@ public:
 
     string divider(string string1, const string& string2);
 };
+
+template<typename T>
+CNode<T>::CNode(const CNode<T> &other) {
+    type = other.type;
+    value = other.value;
+    operationOrVariable = other.operationOrVariable;
+    children = other.children;
+}
 
 template<typename T>
 string CNode<T>::divider(string string1, const string& string2) {

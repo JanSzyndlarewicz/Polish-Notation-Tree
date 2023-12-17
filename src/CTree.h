@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+
+using namespace std;
+
 template <typename T>
 class CTree {
 private:
@@ -17,6 +20,7 @@ private:
 
 public:
     CTree();
+    CTree(const CTree<T> &other);
     explicit CTree(vector<string>& expression);
 
     static vector<string> findVariables(CNode<T> &node);
@@ -25,7 +29,11 @@ public:
     CNode<T> &getRoot();
     vector<T> convertToT(vector<string> &values);
 
-    CTree operator+(const CTree &tree);
+    CTree operator+(const CTree &tree) const&;
+    CTree operator+(const CTree &tree) &&;
+
+    CTree operator=(const CTree &other);
+    CTree operator=(CTree &&other);
 
 
     static int stringToInt(string &str);
@@ -134,6 +142,27 @@ CTree<T>::CTree(vector<string> &expression) {
 }
 
 template<typename T>
+CTree<T> CTree<T>::operator=(CTree &&other) {
+    root = other.root;
+    return *this;
+}
+
+
+template<typename T>
+CTree<T> CTree<T>::operator=(const CTree &other) {
+    root = other.root;
+    return *this;
+}
+
+
+
+template<typename T>
+CTree<T>::CTree(const CTree<T> &other) {
+    root = other.root;
+}
+
+
+template<typename T>
 CTree<T>::CTree() {}
 
 template<typename T>
@@ -147,10 +176,18 @@ CNode<T> &CTree<T>::getRoot() {
     return root;
 }
 
+//Plus nie modyfikuje drzewa, wiec zwracamy nowe drzewo
 template<typename T>
-CTree<T> CTree<T>::operator+(const CTree<T> &tree) {
+CTree<T> CTree<T>::operator+(const CTree<T> &tree) const&{
+    CTree<T> newTree(*this);
+    *newTree.root.getLeftLeaf() = tree.root;
+    return move(newTree);
+}
+
+template<typename T>
+CTree<T> CTree<T>::operator+(const CTree<T> &tree) &&{
     *root.getLeftLeaf() = tree.root;
-    return *this;
+    return move(*this);
 }
 
 #endif //UNTITLED_CTREE_H
